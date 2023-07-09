@@ -18,14 +18,14 @@ async function bootstrap() {
   )
 
   SwaggerModule.setup(
-    "api",
+    "doc",
     app,
     SwaggerModule.createDocument(
       app,
       new DocumentBuilder()
         .setTitle("icon-backend")
         .setDescription("Backend route for icon site")
-        .setVersion("3.0")
+        .setVersion("1.0")
         .build(),
     ),
   )
