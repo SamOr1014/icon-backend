@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common"
 import { PrismaService } from "../db/prisma.service"
 import { User } from "@prisma/client"
-import { CheckUserDto } from "./dto/CheckUserDto"
-import { CreateUserDto } from "./dto/CreateUserDto"
-import { GetUserDto } from "./dto/GetUserDto"
+import { CheckUserDto } from "../dto/CheckUserDto"
+import { CreateUserDto } from "../dto/CreateUserDto"
+import { GetUserDto } from "../dto/GetUserDto"
 
 @Injectable()
 export class UserService {
@@ -29,37 +29,24 @@ export class UserService {
     }
   }
 
-  checkUsernameExist({ username }: CheckUserDto) {
+  async checkUserExist({ email, username }: CheckUserDto) {
     try {
-      return this.prisma.user.findUnique({
+      const result = await this.prisma.user.findUnique({
         where: {
+          email,
           username,
         },
         select: {
           id: true,
         },
       })
+      return result?.id ? true : false
     } catch (e) {
       throw new Error(e)
     }
   }
 
-  checkEmailExist({ email }: CheckUserDto) {
-    try {
-      return this.prisma.user.findUnique({
-        where: {
-          email,
-        },
-        select: {
-          id: true,
-        },
-      })
-    } catch (e) {
-      throw new Error(e)
-    }
-  }
-
-  getUserByEmail(email: string): Promise<Omit<User, "id">> {
+  getUserByEmail(email: string): Promise<User> {
     try {
       return this.prisma.user.findUnique({
         where: {
@@ -69,6 +56,7 @@ export class UserService {
           email: true,
           password: true,
           username: true,
+          id: true,
         },
       })
     } catch (e) {
