@@ -1,19 +1,26 @@
 import { Injectable } from "@nestjs/common"
 import { PrismaService } from "../db/prisma.service"
 import { User } from "@prisma/client"
-import { CheckUserDto } from "../dto/CheckUserDto"
-import { CreateUserDto } from "../dto/CreateUserDto"
-import { GetUserDto } from "../dto/GetUserDto"
+import { CheckUserDto } from "../auth/dto/CheckUserDto"
+import { CreateUserDto } from "./dto/CreateUserDto"
+import { GetUserDto } from "./dto/GetUserDto"
+import { UserWithoutPassword } from "./types/user"
 
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  getUserById(id: GetUserDto["id"]): Promise<User> {
+  getUserById(id: GetUserDto["id"]): Promise<UserWithoutPassword> {
     try {
       return this.prisma.user.findUnique({
         where: {
           id: id,
+        },
+        select: {
+          id: true,
+          username: true,
+          email: true,
+          password: false,
         },
       })
     } catch (e) {
@@ -21,15 +28,22 @@ export class UserService {
     }
   }
 
-  getAllUser(): Promise<User[]> {
+  getAllUser(): Promise<UserWithoutPassword[]> {
     try {
-      return this.prisma.user.findMany()
+      return this.prisma.user.findMany({
+        select: {
+          id: true,
+          username: true,
+          email: true,
+          password: false,
+        },
+      })
     } catch (e) {
       throw new Error(e)
     }
   }
 
-  async checkUserExist({ email, username }: CheckUserDto) {
+  async checkUserExist({ email, username }: CheckUserDto): Promise<boolean> {
     try {
       const result = await this.prisma.user.findUnique({
         where: {

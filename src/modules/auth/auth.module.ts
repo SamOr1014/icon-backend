@@ -14,11 +14,15 @@ import { jwtSecret } from "src/constants/jwt"
       global: true,
       secret: jwtSecret,
       signOptions: {
-        expiresIn: "1d",
+        expiresIn: "7d",
+      },
+      verifyOptions: {
+        ignoreExpiration: false,
       },
     }),
   ],
   controllers: [AuthController],
   providers: [AuthService],
+  exports: [AuthService],
 })
 export class AuthModules {}
