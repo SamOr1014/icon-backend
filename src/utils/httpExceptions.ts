@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus } from "@nestjs/common"
 
-export class HTTPStatusCodeRes {
+export class HTTPStatus {
   ResMessage: string
   constructor(customMessage?: string) {
-    this.ResMessage = customMessage.toUpperCase()
+    this.ResMessage = customMessage?.toUpperCase()
   }
 
   notFound() {
