@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common"
 import { PrismaService } from "../db/prisma.service"
+import { PostWithOutId } from "./type"
 
 @Injectable()
 export class PostService {
@@ -24,8 +25,7 @@ export class PostService {
       throw new Error(e)
     }
   }
-  // TODO : type
-  async postPost(post: any) {
+  async createPost(post: PostWithOutId) {
     try {
       return await this.prisma.post.create({
         data: post,
@@ -34,8 +34,7 @@ export class PostService {
       throw new Error(e)
     }
   }
-  // TODO : type
-  async patchPost(id: number, payloads: any) {
+  async patchPost(id: number, payloads: Partial<PostWithOutId>) {
     try {
       return await this.prisma.post.update({
         where: {

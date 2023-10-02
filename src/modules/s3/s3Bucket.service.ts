@@ -1,6 +1,7 @@
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3"
 import { Injectable } from "@nestjs/common"
 import { randomBytes } from "crypto"
+import { generateS3Url } from "./utils/generateS3Url"
 
 @Injectable()
 export class S3BucketService {
@@ -18,9 +19,9 @@ export class S3BucketService {
   })
 
   async uploadByS3(file: Express.Multer.File) {
-    const fileName = `${new Date().toUTCString()}-${randomBytes(16).toString(
-      "hex",
-    )}`
+    const fileName = `${new Date()
+      .toISOString()
+      .replace(".", "")}-${randomBytes(16).toString("hex")}`
     const params = {
       Bucket: this.S3_BUCKET_NAME,
       //name for files
@@ -29,10 +30,12 @@ export class S3BucketService {
       ContentType: file.mimetype,
     }
 
-    const command = new PutObjectCommand(params)
+    const putCommand = new PutObjectCommand(params)
     try {
-      const result = await this.s3BucketClient.send(command)
-      return result
+      await this.s3BucketClient.send(putCommand)
+      return {
+        url: generateS3Url(this.S3_BUCKET_NAME, this.AWS_REGION, fileName),
+      }
     } catch (e) {
       console.log(e)
     }
