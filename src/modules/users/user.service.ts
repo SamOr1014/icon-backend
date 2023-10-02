@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common"
 import { PrismaService } from "../db/prisma.service"
 import { User } from "@prisma/client"
 import { CheckUserDto } from "../auth/dto/CheckUserDto"
-import { CreateUserDto } from "./dto/CreateUserDto"
+import type { CreateUserDto } from "./dto/CreateUserDto"
 import { GetUserDto } from "./dto/GetUserDto"
 import { UserWithoutPassword } from "./types/user"
 
@@ -14,7 +14,7 @@ export class UserService {
     try {
       return this.prisma.user.findUnique({
         where: {
-          id: id,
+          id,
         },
         select: {
           id: true,

@@ -17,7 +17,6 @@ async function bootstrap() {
       transform: true,
     }),
   )
-
   SwaggerModule.setup(
     "doc",
     app,

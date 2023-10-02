@@ -23,7 +23,7 @@ import { AuthGuard } from "@src/middlewares/authGuard.guard"
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get("/id/:id")
+  @Get("id/:id")
   @HttpCode(200)
   @UseGuards(AuthGuard)
   async getUserById(@Param() params: GetUserDto): Promise<UserWithoutPassword> {
