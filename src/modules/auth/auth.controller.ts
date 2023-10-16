@@ -31,7 +31,6 @@ export class AuthController {
   @Get("check")
   @HttpCode(200)
   async checkUserExists(@Query() query: CheckUserDto) {
-    console.log("check exist")
     const result = await this.userService.checkUserExist(query)
     return { userExists: result }
   }
@@ -62,7 +61,6 @@ export class AuthController {
       secure: process.env.NODE_ENV !== "development",
       sameSite: "strict",
     })
-    console.log("login success and cookied")
     return { success: true, message: "login success" }
   }
 

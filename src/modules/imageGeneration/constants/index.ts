@@ -1,0 +1,3 @@
+export const HUGGING_FACE_API_TOKEN = process.env.HUGGING_FACE_API_TOKEN
+export const STABLE_DIFFUSION_URL = process.env.HUGGING_FACE_STABLE_DIFFUSION
+export const PIXEL_ART_URL = process.env.HUGGING_FACE_PIXEL_ART
