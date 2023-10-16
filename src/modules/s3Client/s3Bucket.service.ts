@@ -1,4 +1,8 @@
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3"
+import {
+  PutObjectCommand,
+  PutObjectCommandInput,
+  S3Client,
+} from "@aws-sdk/client-s3"
 import { Injectable } from "@nestjs/common"
 import { randomBytes } from "crypto"
 import { generateS3Url } from "./utils/generateS3Url"
@@ -18,19 +22,11 @@ export class S3BucketService {
     },
   })
 
-  async uploadByS3(file: Express.Multer.File) {
+  private async uploadToS3(payload: PutObjectCommandInput) {
     const fileName = `${new Date()
       .toISOString()
       .replace(".", "")}-${randomBytes(16).toString("hex")}`
-    const params = {
-      Bucket: this.S3_BUCKET_NAME,
-      //name for files
-      Key: fileName,
-      Body: file.buffer,
-      ContentType: file.mimetype,
-    }
-
-    const putCommand = new PutObjectCommand(params)
+    const putCommand = new PutObjectCommand({ ...payload, Key: fileName })
     try {
       await this.s3BucketClient.send(putCommand)
       return {
@@ -39,5 +35,25 @@ export class S3BucketService {
     } catch (e) {
       console.log(e)
     }
+  }
+
+  async handleUploadedImage(file: Express.Multer.File) {
+    const params = {
+      Bucket: this.S3_BUCKET_NAME,
+      Body: file.buffer,
+      ContentType: file.mimetype,
+    } as PutObjectCommandInput
+    const result = await this.uploadToS3(params)
+    return result
+  }
+
+  async handleUploadBuffer(buffer: Buffer) {
+    const params = {
+      Bucket: this.S3_BUCKET_NAME,
+      Body: buffer,
+      ContentType: "image/jpg",
+    } as PutObjectCommandInput
+    const result = await this.uploadToS3(params)
+    return result
   }
 }

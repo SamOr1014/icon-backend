@@ -52,9 +52,8 @@ export class PostController {
     file: Express.Multer.File,
     @Body() body: CreatePostDto,
   ) {
-    console.log("hit")
     try {
-      const { url } = await this.s3BucketService.uploadByS3(file)
+      const { url } = await this.s3BucketService.handleUploadedImage(file)
       await this.postService.createPost({
         image: url,
         title: body.title,
